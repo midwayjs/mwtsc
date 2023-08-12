@@ -1,6 +1,6 @@
 {
   "name": "mwtsc",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "tsc warpper for midwayjs development",
   "main": "lib/index.js",
   "bin": {
