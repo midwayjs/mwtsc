@@ -1,10 +1,10 @@
 {
-  "name": "mtsc",
-  "version": "0.0.1",
+  "name": "mwtsc",
+  "version": "0.0.2",
   "description": "tsc warpper for midwayjs development",
   "main": "lib/index.js",
   "bin": {
-    "mtsc": "bin/mtsc.js"
+    "mwtsc": "bin/mwtsc.js"
   },
   "devDependencies": {
     "execa": "^5.1.1",
@@ -29,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:midwayjs/mtsc.git"
+    "url": "git@github.com:midwayjs/mwtsc.git"
   },
   "license": "MIT"
 }

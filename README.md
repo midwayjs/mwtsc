@@ -6,11 +6,11 @@ it's a tsc wrapper, like tsc-watch.
 
 ```bash
 # run package file
-$ npx mtsc --watch --run @midwayjs/mock/app.js
+$ npx mwtsc --watch --run @midwayjs/mock/app.js
 
 # run file
-$ npx mtsc --watch --run ./bootstrap.js
+$ npx mwtsc --watch --run ./bootstrap.js
 
 # run with tsc options
-$ npx mtsc --watch --project tsconfig.production.json --run ./bootstrap.js
+$ npx mwtsc --watch --project tsconfig.production.json --run ./bootstrap.js
 ```
