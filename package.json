@@ -21,7 +21,8 @@
   ],
   "keywords": [
     "midway",
-    "tsc"
+    "tsc",
+    "tsc-watch"
   ],
   "scripts": {
     "test": "jest --timeout=30",
