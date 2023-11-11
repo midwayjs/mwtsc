@@ -28,7 +28,7 @@
     "tsc-watch"
   ],
   "scripts": {
-    "test": "jest --timeout=30",
+    "test": "jest --testTimeout=30000",
     "cov": "jest --coverage"
   },
   "repository": {

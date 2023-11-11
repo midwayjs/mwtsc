@@ -1,8 +1,8 @@
 const execa = require('execa');
 const { join } = require('path');
-const { existsSync } = require('fs');
+const { existsSync, unlinkSync } = require('fs');
 
-const mtscPath = join(__dirname, '../bin/mtsc');
+const mtscPath = join(__dirname, '../bin/mwtsc.js');
 
 describe('/test/index.js', () => {
   it('should throw error when no --run parameter', async () => {
@@ -23,14 +23,17 @@ describe('/test/index.js', () => {
 
       cp.on('exit', code => {
         console.log('exit', code);
-        cp.kill();
         resolve();
       });
+
+      setTimeout(() => {
+        cp.kill();
+      }, 3000);
     })
   });
 
-  it.only('should compile ts file and run custom js', async () => {
-    await new Promise(resolve => {
+  it('should compile ts file and run custom js', async () => {
+    await new Promise((resolve, reject) => {
       process.stderr.on('data', data => {
         console.log(data.toString());
         resolve();
@@ -49,10 +52,17 @@ describe('/test/index.js', () => {
       cp.stderr.pipe(process.stderr);
 
       cp.on('exit', code => {
-        expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
-        cp.kill();
-        resolve();
+        try {
+          expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
       });
+
+      setTimeout(() => {
+        cp.kill();
+      }, 3000);
     })
   });
 });
