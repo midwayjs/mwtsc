@@ -1,4 +1,11 @@
 
+1.2.0 / 2023-12-27
+==================
+
+  * Merge pull request #1 from midwayjs/support_change_ssl
+  * chore: change https when set --ssl
+  * chore: bump version
+
 1.1.0 / 2023-11-12
 ==================
 
