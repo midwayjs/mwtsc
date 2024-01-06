@@ -1,6 +1,7 @@
 const execa = require('execa');
-const { join } = require('path');
+const { join, resolve } = require('path');
 const { existsSync, unlinkSync } = require('fs');
+const { forkRun } = require('../lib/process');
 
 const mtscPath = join(__dirname, '../bin/mwtsc.js');
 
@@ -63,6 +64,21 @@ describe('/test/index.js', () => {
       setTimeout(() => {
         cp.kill();
       }, 3000);
-    })
+    });
+  });
+
+  it('should send server-kill event to child process and receive response', (done) => {
+    const childProcess = forkRun(resolve(__dirname, './fixtures/custom-event.js'));
+    childProcess.getRealChild().on('message', (data) => {
+      if (data === 'server-kill-complete') {
+        childProcess.kill();
+        done();
+      }
+    });
+    childProcess.onServerReady(() => {
+      childProcess.getRealChild().send({
+        title: 'server-kill',
+      });
+    });
   });
 });
