@@ -1,4 +1,4 @@
-const { parseArgs, deleteFolderRecursive } = require('../lib/util');
+const { parseArgs, deleteFolderRecursive, copyFilesRecursive } = require('../lib/util');
 const fs = require('fs');
 const path = require('path')
 
@@ -39,4 +39,29 @@ describe('test/util.test.js', () => {
       expect(fs.existsSync(testDirPath)).toBe(false);
     });
   });
+
+
+  describe('copyFilesRecursive', () => {
+    const sourceDir = path.join(__dirname, 'fixtures/copy/src');
+    const targetDir = path.join(__dirname, 'targetDir/dist');
+
+    // 在每个测试用例之后，确保测试目录已被删除
+    beforeEach(() => {
+      if (fs.existsSync(targetDir)) {
+        deleteFolderRecursive(targetDir);
+      }
+    });
+
+    it('should copy the directory and all its contents', () => {
+      copyFilesRecursive(sourceDir, targetDir, true);
+
+      // 检查目录是否已被复制
+      expect(fs.existsSync(targetDir)).toBe(true);
+      expect(fs.existsSync(path.join(targetDir, 'a.ts'))).toBe(false);
+      expect(fs.existsSync(path.join(targetDir, 'a.js'))).toBe(true);
+      expect(fs.existsSync(path.join(targetDir, 'b/.ccc'))).toBe(true);
+      expect(fs.existsSync(path.join(targetDir, 'b/b.html'))).toBe(true);
+    });
+  });
+
 });
