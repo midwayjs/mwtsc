@@ -58,6 +58,17 @@ describe('test/util.test.js', () => {
       // 检查目录是否已被复制
       expect(fs.existsSync(targetDir)).toBe(true);
       expect(fs.existsSync(path.join(targetDir, 'a.ts'))).toBe(false);
+      expect(fs.existsSync(path.join(targetDir, 'a.js'))).toBe(false);
+      expect(fs.existsSync(path.join(targetDir, 'b/.ccc'))).toBe(true);
+      expect(fs.existsSync(path.join(targetDir, 'b/b.html'))).toBe(true);
+    });
+
+    it('should copy the directory and all its contents', () => {
+      copyFilesRecursive(sourceDir, targetDir, false);
+
+      // 检查目录是否已被复制
+      expect(fs.existsSync(targetDir)).toBe(true);
+      expect(fs.existsSync(path.join(targetDir, 'a.ts'))).toBe(false);
       expect(fs.existsSync(path.join(targetDir, 'a.js'))).toBe(true);
       expect(fs.existsSync(path.join(targetDir, 'b/.ccc'))).toBe(true);
       expect(fs.existsSync(path.join(targetDir, 'b/b.html'))).toBe(true);
