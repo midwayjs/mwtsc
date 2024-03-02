@@ -1,4 +1,4 @@
-const { parseArgs, deleteFolderRecursive, copyFilesRecursive } = require('../lib/util');
+const { parseArgs, deleteFolderRecursive, copyFilesRecursive, readJSONCFile } = require('../lib/util');
 const fs = require('fs');
 const path = require('path')
 
@@ -73,6 +73,21 @@ describe('test/util.test.js', () => {
       expect(fs.existsSync(path.join(targetDir, 'b/.ccc'))).toBe(true);
       expect(fs.existsSync(path.join(targetDir, 'b/b.html'))).toBe(true);
     });
+  });
+
+
+  it('should test read tsconfig file', () => {
+    const data = readJSONCFile(path.join(__dirname, 'fixtures/ts_config/tsconfig.json'));
+    expect(data.options).toBeDefined();
+    expect(data.raw).toBeDefined();
+  });
+
+  it('should test read tsconfig file with extends', () => {
+    const data = readJSONCFile(path.join(__dirname, 'fixtures/ts_config/tsconfig_extend.json'));
+    expect(data.options).toBeDefined();
+    expect(data.options.paths).toBeDefined();
+    expect(data.raw).toBeDefined();
+    expect(data.raw.paths).not.toBeDefined();
   });
 
 });
