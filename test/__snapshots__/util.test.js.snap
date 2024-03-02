@@ -1,0 +1,155 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test/util.test.js should test read tsconfig file 1`] = `
+{
+  "compileOnSave": true,
+  "errors": [
+    {
+      "category": 1,
+      "code": 18003,
+      "file": undefined,
+      "length": undefined,
+      "messageText": "No inputs were found in config file 'tsconfig.json'. Specified 'include' paths were '["**/*"]' and 'exclude' paths were '["dist","node_modules","test"]'.",
+      "reportsDeprecated": undefined,
+      "reportsUnnecessary": undefined,
+      "start": undefined,
+    },
+  ],
+  "fileNames": [],
+  "options": {
+    "configFilePath": undefined,
+    "module": 1,
+    "moduleResolution": 2,
+    "target": 5,
+  },
+  "projectReferences": undefined,
+  "raw": {
+    "compileOnSave": true,
+    "compilerOptions": {
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "target": "es2018",
+    },
+    "exclude": [
+      "dist",
+      "node_modules",
+      "test",
+    ],
+  },
+  "typeAcquisition": {
+    "enable": false,
+    "exclude": [],
+    "include": [],
+  },
+  "watchOptions": undefined,
+  "wildcardDirectories": {
+    "/users/harry/project/mtsc/test/fixtures/ts_config": 1,
+  },
+}
+`;
+
+exports[`test/util.test.js should test read tsconfig file with extends 1`] = `
+{
+  "compileOnSave": false,
+  "errors": [
+    {
+      "category": 1,
+      "code": 18003,
+      "file": undefined,
+      "length": undefined,
+      "messageText": "No inputs were found in config file 'tsconfig.json'. Specified 'include' paths were '["src/**/*.ts"]' and 'exclude' paths were '["asset","app/public","app/views","dist","node_modules*","**/*.d.ts","**/*.spec.ts"]'.",
+      "reportsDeprecated": undefined,
+      "reportsUnnecessary": undefined,
+      "start": undefined,
+    },
+  ],
+  "fileNames": [],
+  "options": {
+    "baseUrl": "/Users/harry/project/mtsc/test/fixtures/ts_config",
+    "configFilePath": undefined,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "exactOptionalPropertyTypes": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "module": 199,
+    "moduleResolution": 99,
+    "newLine": 1,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "/Users/harry/project/mtsc/test/fixtures/ts_config/dist",
+    "paths": {
+      "##/*": [
+        "src/*",
+      ],
+      "#@/*": [
+        "test/*",
+      ],
+      "#a/*": [
+        "src/app/*",
+      ],
+    },
+    "pathsBasePath": "/Users/harry/project/mtsc/test/fixtures/ts_config",
+    "preserveConstEnums": true,
+    "pretty": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "stripInternal": true,
+    "target": 9,
+    "tsBuildInfoFile": "/Users/harry/project/mtsc/test/fixtures/ts_config/.tsbuildinfo",
+    "types": [
+      "mocha",
+      "node",
+    ],
+  },
+  "projectReferences": undefined,
+  "raw": {
+    "compileOnSave": false,
+    "compilerOptions": {
+      "paths": {
+        "##/*": [
+          "src/*",
+        ],
+        "#@/*": [
+          "test/*",
+        ],
+        "#a/*": [
+          "src/app/*",
+        ],
+      },
+    },
+    "exclude": [
+      "asset",
+      "app/public",
+      "app/views",
+      "dist",
+      "node_modules*",
+      "**/*.d.ts",
+      "**/*.spec.ts",
+    ],
+    "extends": "./tsconfig.base.json",
+    "include": [
+      "src/**/*.ts",
+    ],
+  },
+  "typeAcquisition": {
+    "enable": false,
+    "exclude": [],
+    "include": [],
+  },
+  "watchOptions": undefined,
+  "wildcardDirectories": {
+    "/users/harry/project/mtsc/test/fixtures/ts_config/src": 1,
+  },
+}
+`;
