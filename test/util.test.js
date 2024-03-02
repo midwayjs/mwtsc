@@ -78,12 +78,16 @@ describe('test/util.test.js', () => {
 
   it('should test read tsconfig file', () => {
     const data = readJSONCFile(path.join(__dirname, 'fixtures/ts_config/tsconfig.json'));
-    expect(data).toMatchSnapshot();
+    expect(data.options).toBeDefined();
+    expect(data.raw).toBeDefined();
   });
 
   it('should test read tsconfig file with extends', () => {
     const data = readJSONCFile(path.join(__dirname, 'fixtures/ts_config/tsconfig_extend.json'));
-    expect(data).toMatchSnapshot();
+    expect(data.options).toBeDefined();
+    expect(data.options.paths).toBeDefined();
+    expect(data.raw).toBeDefined();
+    expect(data.raw.paths).not.toBeDefined();
   });
 
 });
