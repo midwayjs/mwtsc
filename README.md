@@ -19,4 +19,4 @@ $ npx mwtsc --watch --project tsconfig.production.json --run ./bootstrap.js
 
 * 1、support `--run` option, run file after compile success
 * 2、support copy non-ts file to dist directory when build source code
-* 3、TODO: support ts alias path
+* 3、support ts alias path by tsc-alias
