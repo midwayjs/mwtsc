@@ -1,4 +1,10 @@
 
+1.7.2 / 2024-03-07
+==================
+
+  * chore: optimization kill app speed (#15)
+  * chore: update readme
+
 1.7.1 / 2024-03-02
 ==================
 
