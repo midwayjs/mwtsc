@@ -1,4 +1,4 @@
-const { parseArgs, deleteFolderRecursive, copyFilesRecursive, readJSONCFile } = require('../lib/util');
+const { parseArgs, deleteFolderRecursive, copyFilesRecursive, readJSONCFile, filterFileChangedText } = require('../lib/util');
 const fs = require('fs');
 const path = require('path')
 
@@ -88,6 +88,11 @@ describe('test/util.test.js', () => {
     expect(data.options.paths).toBeDefined();
     expect(data.raw).toBeDefined();
     expect(data.raw.paths).not.toBeDefined();
+  });
+
+  it('should parse output TSFILE', () => {
+    expect(filterFileChangedText('TSFILE: /Users/harry/project/application/open-koa-v3/dist/task/hello.d.ts')).toEqual(['', []]);
+    expect(filterFileChangedText('TSFILE: /Users/harry/project/application/open-koa-v3/dist/task/hello.js')).toEqual(['', ['/Users/harry/project/application/open-koa-v3/dist/task/hello.js']]);
   });
 
 });
