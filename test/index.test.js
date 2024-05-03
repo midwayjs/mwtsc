@@ -1,7 +1,7 @@
 const { join, resolve } = require('path');
 const { existsSync, unlinkSync, writeFileSync, readFileSync } = require('fs');
 const { forkRun } = require('../lib/process');
-const { execa } = require('./util');
+const { execa, sleep } = require('./util');
 
 const mtscPath = join(__dirname, '../bin/mwtsc.js');
 
@@ -111,6 +111,8 @@ describe('/test/index.js', () => {
 
     // change file
     writeFileSync(file, 'console.log("b")');
+
+    await sleep(1000);
 
     await new Promise((resolve, reject) => {
       cp.on('exit', code => {
