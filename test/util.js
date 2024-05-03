@@ -8,4 +8,11 @@ function execa(cmd, args, options) {
   }, options));
 }
 
+function sleep(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
 exports.execa = execa;
+exports.sleep = sleep;

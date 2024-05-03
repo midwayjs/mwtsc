@@ -43,21 +43,6 @@ describe('/test/index.js', () => {
     });
   });
 
-  it('should send server-kill event to child process and receive response', (done) => {
-    const childProcess = forkRun(resolve(__dirname, './fixtures/custom-event.js'));
-    childProcess.getRealChild().on('message', (data) => {
-      if (data === 'server-kill-complete') {
-        childProcess.kill();
-        done();
-      }
-    });
-    childProcess.onServerReady(() => {
-      childProcess.getRealChild().send({
-        title: 'server-kill',
-      });
-    });
-  });
-
   it('should test ts file change and reload process', async () => {
 
     // prepare
@@ -141,6 +126,22 @@ describe('/test/index.js', () => {
       setTimeout(() => {
         cp.kill();
       }, 3000);
+    });
+  });
+
+
+  it('should send server-kill event to child process and receive response', (done) => {
+    const childProcess = forkRun(resolve(__dirname, './fixtures/custom-event.js'));
+    childProcess.getRealChild().on('message', (data) => {
+      if (data === 'server-kill-complete') {
+        childProcess.kill();
+        done();
+      }
+    });
+    childProcess.onServerReady(() => {
+      childProcess.getRealChild().send({
+        title: 'server-kill',
+      });
     });
   });
 });
