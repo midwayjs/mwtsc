@@ -115,7 +115,7 @@ describe('/test/index.js', () => {
 
       setTimeout(() => {
         cp.kill();
-      }, 10000);
+      }, 3000);
     });
   });
 });
