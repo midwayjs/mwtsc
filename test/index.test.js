@@ -87,8 +87,15 @@ describe('/test/index.js', () => {
     // prepare
     const runPath = join(__dirname, 'fixtures/add_file');
     const file = join(runPath, 'a.ts');
-    if (existsSync(file)) {
-      unlinkSync(file);
+    const fileList = [
+      file,
+      join(runPath, 'dist/a.js'),
+    ]
+
+    for (const f of fileList) {
+      if (existsSync(f)) {
+        unlinkSync(f);
+      }
     }
 
     const cp = execa('node', [mtscPath, '--watch', '--run', './run.js'], {
@@ -106,7 +113,51 @@ describe('/test/index.js', () => {
       cp.on('exit', code => {
         try {
           expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
-          expect(readFileSync(join(runPath, 'dist/a.js'), 'utf-8')).toMatch(/b/);
+          expect(readFileSync(join(runPath, 'dist/a.js'), 'utf-8')).toMatch(/"b"/);
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+
+      setTimeout(() => {
+        cp.kill();
+      }, 3000);
+    });
+  });
+
+  it('should test ts file init error and reload process', async () => {
+
+    // prepare
+    const runPath = join(__dirname, 'fixtures/add_file');
+    const file = join(runPath, 'a.ts');
+
+    const fileList = [
+      file,
+      join(runPath, 'dist/a.js'),
+    ]
+
+    for (const f of fileList) {
+      if (existsSync(f)) {
+        unlinkSync(f);
+      }
+    }
+    // add a error file
+    writeFileSync(file, 'console.log("a)');
+
+    const cp = execa('node', [mtscPath, '--watch', '--run', './run.js'], {
+      cwd: runPath,
+      // stdio: 'ignore',
+    });
+
+    // change file
+    writeFileSync(file, 'console.log("b")');
+
+    await new Promise((resolve, reject) => {
+      cp.on('exit', code => {
+        try {
+          expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
+          expect(readFileSync(join(runPath, 'dist/a.js'), 'utf-8')).toMatch(/"b"/);
           resolve();
         } catch (err) {
           reject(err);
