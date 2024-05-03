@@ -1,7 +1,7 @@
-const execa = require('execa');
 const { join, resolve } = require('path');
 const { existsSync, unlinkSync, writeFileSync, readFileSync } = require('fs');
 const { forkRun } = require('../lib/process');
+const { execa } = require('./util');
 
 const mtscPath = join(__dirname, '../bin/mwtsc.js');
 
