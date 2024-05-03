@@ -8,3 +8,4 @@ dist/
 pnpm-lock.yaml
 yarn.lock
 package-lock.json
+test/fixtures/add_file/a.ts

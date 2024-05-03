@@ -1,6 +1,6 @@
 const execa = require('execa');
 const { join, resolve } = require('path');
-const { existsSync, unlinkSync } = require('fs');
+const { existsSync, unlinkSync, writeFileSync, readFileSync } = require('fs');
 const { forkRun } = require('../lib/process');
 
 const mtscPath = join(__dirname, '../bin/mwtsc.js');
@@ -79,6 +79,43 @@ describe('/test/index.js', () => {
       childProcess.getRealChild().send({
         title: 'server-kill',
       });
+    });
+  });
+
+  it('should test ts file change and reload process', async () => {
+
+    // prepare
+    const runPath = join(__dirname, 'fixtures/add_file');
+    const file = join(runPath, 'a.ts');
+    if (existsSync(file)) {
+      unlinkSync(file);
+    }
+
+    const cp = execa('node', [mtscPath, '--watch', '--run', './run.js'], {
+      cwd: runPath,
+      // stdio: 'ignore',
+    });
+
+    // add a new file
+    writeFileSync(file, 'console.log("a")');
+
+    // change file
+    writeFileSync(file, 'console.log("b")');
+
+    await new Promise((resolve, reject) => {
+      cp.on('exit', code => {
+        try {
+          expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
+          expect(readFileSync(join(runPath, 'dist/a.js'), 'utf-8')).toMatch(/b/);
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+
+      setTimeout(() => {
+        cp.kill();
+      }, 10000);
     });
   });
 });
