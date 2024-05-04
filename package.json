@@ -32,7 +32,7 @@
   ],
   "scripts": {
     "test": "jest --testTimeout=30000 --runInBand",
-    "cov": "jest --coverage --runInBand"
+    "cov": "jest --testTimeout=30000 --coverage --runInBand"
   },
   "repository": {
     "type": "git",
