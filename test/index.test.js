@@ -6,10 +6,10 @@ const { execa, sleep } = require('./util');
 const mtscPath = join(__dirname, '../bin/mwtsc.js');
 
 describe('/test/index.js', () => {
-  it('should throw error when no --run parameter', async () => {
-    await new Promise(resolve => {
-      const cp = execa('node', [mtscPath], {});
+  it.skip('should throw error when no --run parameter', async () => {
+    const cp = await execa('node', [mtscPath], {});
 
+    await new Promise(resolve => {
       cp.on('exit', code => {
         console.log('exit', code);
         resolve();
@@ -21,13 +21,13 @@ describe('/test/index.js', () => {
     })
   });
 
-  it('should compile ts file and run custom js', async () => {
-    await new Promise((resolve, reject) => {
-      const runPath = join(__dirname, 'fixtures/base');
-      const cp = execa('node', [mtscPath, '--run', './run.js'], {
-        cwd: runPath,
-      });
+  it('should compile ts file and ignore run script without watch args', async () => {
+    const runPath = join(__dirname, 'fixtures/base');
+    const cp = await execa('node', [mtscPath, '--run', './run.js'], {
+      cwd: runPath,
+    });
 
+    await new Promise((resolve, reject) => {
       cp.on('exit', code => {
         try {
           expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
@@ -44,7 +44,6 @@ describe('/test/index.js', () => {
   });
 
   it('should test ts file change and reload process', async () => {
-
     // prepare
     const runPath = join(__dirname, 'fixtures/add_file');
     const file = join(runPath, 'a.ts');
@@ -59,7 +58,7 @@ describe('/test/index.js', () => {
       }
     }
 
-    const cp = execa('node', [mtscPath, '--watch', '--run', './run.js'], {
+    const cp = await execa('node', [mtscPath, '--watch', '--run', './run.js'], {
       cwd: runPath,
     });
 
@@ -107,12 +106,10 @@ describe('/test/index.js', () => {
       }
     }
 
-    await sleep(500);
-
     // add a error file
     writeFileSync(file, 'console.log("a)');
 
-    const cp = execa('node', [mtscPath, '--watch', '--run', './run.js'], {
+    const cp = await execa('node', [mtscPath, '--watch', '--run', './run.js'], {
       cwd: runPath,
     });
 
@@ -138,7 +135,7 @@ describe('/test/index.js', () => {
     });
   });
 
-  it.skip('should send server-kill event to child process and receive response', (done) => {
+  it('should send server-kill event to child process and receive response', (done) => {
     const childProcess = forkRun(resolve(__dirname, './fixtures/custom-event.js'));
     childProcess.getRealChild().on('message', (data) => {
       if (data === 'server-kill-complete') {

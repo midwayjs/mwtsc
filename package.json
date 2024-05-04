@@ -31,8 +31,8 @@
     "tsc-watch"
   ],
   "scripts": {
-    "test": "jest --testTimeout=30000",
-    "cov": "jest --coverage"
+    "test": "jest --testTimeout=30000 --runInBand",
+    "cov": "jest --coverage --runInBand"
   },
   "repository": {
     "type": "git",
