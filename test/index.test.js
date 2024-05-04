@@ -66,8 +66,12 @@ describe('/test/index.js', () => {
     // add a new file
     writeFileSync(file, 'console.log("a")');
 
+    await sleep(500);
+
     // change file
     writeFileSync(file, 'console.log("b")');
+
+    await sleep(500);
 
     await new Promise((resolve, reject) => {
       cp.on('exit', code => {
@@ -102,6 +106,9 @@ describe('/test/index.js', () => {
         unlinkSync(f);
       }
     }
+
+    await sleep(500);
+
     // add a error file
     writeFileSync(file, 'console.log("a)');
 
