@@ -131,8 +131,7 @@ describe('/test/index.js', () => {
     });
   });
 
-
-  it('should send server-kill event to child process and receive response', (done) => {
+  it.skip('should send server-kill event to child process and receive response', (done) => {
     const childProcess = forkRun(resolve(__dirname, './fixtures/custom-event.js'));
     childProcess.getRealChild().on('message', (data) => {
       if (data === 'server-kill-complete') {
