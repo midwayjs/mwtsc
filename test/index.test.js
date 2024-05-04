@@ -1,5 +1,6 @@
 const { join, resolve } = require('path');
-const { existsSync, unlinkSync, writeFileSync, readFileSync } = require('fs');
+const { unlink } = require('fs/promises');
+const { existsSync, writeFileSync, readFileSync  } = require('fs');
 const { forkRun } = require('../lib/process');
 const { execa, sleep } = require('./util');
 
@@ -54,7 +55,7 @@ describe('/test/index.js', () => {
 
     for (const f of fileList) {
       if (existsSync(f)) {
-        unlinkSync(f);
+        await unlink(f);
       }
     }
 
@@ -89,6 +90,55 @@ describe('/test/index.js', () => {
     });
   });
 
+  it.skip('should test ts file and directory removed', async () => {
+    // prepare
+    const runPath = join(__dirname, 'fixtures/remove_file');
+    const file = join(runPath, 'src/a.ts');
+    const fileList = [
+      file,
+      join(runPath, 'dist/a.js'),
+    ]
+
+    for (const f of fileList) {
+      if (existsSync(f)) {
+        await unlink(f);
+      }
+    }
+
+    const cp = await execa('node', [mtscPath, '--watch', '--run', './run.js'], {
+      cwd: runPath,
+    });
+
+    // add a new file
+    writeFileSync(file, 'console.log("a")');
+    await sleep(2000);
+
+    expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
+
+    // remove file
+    await unlink(file);
+
+    await sleep(2000);
+
+    // check file removed
+    expect(existsSync(file)).toBeFalsy();
+    expect(existsSync(join(runPath, 'dist/a.js'))).toBeFalsy();
+
+    await new Promise((resolve, reject) => {
+      cp.on('exit', code => {
+        try {
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+
+      setTimeout(() => {
+        cp.kill();
+      }, 10000);
+    });
+  });
+
   it('should test ts file init error and reload process', async () => {
 
     // prepare
@@ -102,7 +152,7 @@ describe('/test/index.js', () => {
 
     for (const f of fileList) {
       if (existsSync(f)) {
-        unlinkSync(f);
+        await unlink(f);
       }
     }
 
