@@ -3,10 +3,11 @@ const cp = require('child_process');
 function execa(cmd, args, options) {
   return new Promise((resolve, reject) => {
     // mock execa
-    const child = cp.spawn(cmd, args, Object.assign({
+    const child = cp.spawn(cmd, args, {
       cwd: __dirname,
       stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-    }, options));
+      ...options,
+    });
 
     child.on('message', (data) => {
       if (args.includes('--watch')) {
@@ -22,6 +23,14 @@ function execa(cmd, args, options) {
           console.log('got event:', data);
         }
       }
+    });
+
+    child.on('error', (err) => {
+      reject(err);
+    });
+
+    child.once('exit', (code) => {
+      console.log('exit', code);
     });
   });
 

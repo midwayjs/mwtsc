@@ -30,7 +30,7 @@
     "tsc-watch"
   ],
   "scripts": {
-    "test": "jest --testTimeout=30000 --runInBand --forceExit",
+    "test": "jest --testTimeout=30000 --runInBand",
     "cov": "jest --testTimeout=30000 --coverage --runInBand --forceExit"
   },
   "repository": {
