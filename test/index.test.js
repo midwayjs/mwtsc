@@ -16,7 +16,7 @@ async function removeFile(fileList) {
 
 describe('/test/index.js', () => {
   it('should compile ts file completely and exit', async () => {
-    const runPath = join(__dirname, 'fixtures/build');
+    const runPath = join(__dirname, 'fixtures/test_build');
     await removeFile([
       join(runPath, 'a.js'),
     ]);
