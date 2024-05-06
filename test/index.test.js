@@ -6,20 +6,32 @@ const { execa, sleep } = require('./util');
 
 const mtscPath = join(__dirname, '../bin/mwtsc.js');
 
+async function removeFile(fileList) {
+  for (const f of fileList) {
+    if (existsSync(f)) {
+      await unlink(f);
+    }
+  }
+}
+
 describe('/test/index.js', () => {
-  it.skip('should throw error when no --run parameter', async () => {
-    const cp = await execa('node', [mtscPath], {});
+  it('should compile ts file completely and exit', async () => {
+    const runPath = join(__dirname, 'fixtures/build');
+    await removeFile([
+      join(runPath, 'a.js'),
+    ]);
+
+    const cp = await execa('node', [mtscPath], {
+      cwd: runPath,
+    });
 
     await new Promise(resolve => {
       cp.on('exit', code => {
+        expect(existsSync(join(runPath, 'a.js'))).toBeTruthy();
         console.log('exit', code);
         resolve();
       });
-
-      setTimeout(() => {
-        cp.kill();
-      }, 3000);
-    })
+    });
   });
 
   it('should compile ts file and ignore run script without watch args', async () => {
@@ -48,16 +60,10 @@ describe('/test/index.js', () => {
     // prepare
     const runPath = join(__dirname, 'fixtures/add_file');
     const file = join(runPath, 'a.ts');
-    const fileList = [
+    await removeFile([
       file,
       join(runPath, 'dist/a.js'),
-    ]
-
-    for (const f of fileList) {
-      if (existsSync(f)) {
-        await unlink(f);
-      }
-    }
+    ]);
 
     const cp = await execa('node', [mtscPath, '--watch', '--run', './run.js'], {
       cwd: runPath,
@@ -94,16 +100,10 @@ describe('/test/index.js', () => {
     // prepare
     const runPath = join(__dirname, 'fixtures/remove_file');
     const file = join(runPath, 'src/a.ts');
-    const fileList = [
+    await removeFile([
       file,
       join(runPath, 'dist/a.js'),
-    ]
-
-    for (const f of fileList) {
-      if (existsSync(f)) {
-        await unlink(f);
-      }
-    }
+    ]);
 
     const cp = await execa('node', [mtscPath, '--watch', '--run', './run.js'], {
       cwd: runPath,
@@ -144,17 +144,10 @@ describe('/test/index.js', () => {
     // prepare
     const runPath = join(__dirname, 'fixtures/add_file');
     const file = join(runPath, 'a.ts');
-
-    const fileList = [
+    await removeFile([
       file,
       join(runPath, 'dist/a.js'),
-    ]
-
-    for (const f of fileList) {
-      if (existsSync(f)) {
-        await unlink(f);
-      }
-    }
+    ]);
 
     // add a error file
     writeFileSync(file, 'console.log("a)');
