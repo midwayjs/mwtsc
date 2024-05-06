@@ -26,7 +26,12 @@ describe('/test/index.js', () => {
     });
 
     await new Promise(resolve => {
+      const h = setTimeout(() => {
+        throw new Error('Child process is running timeout');
+      }, 1000);
+
       cp.on('exit', code => {
+        clearTimeout(h);
         expect(existsSync(join(runPath, 'a.js'))).toBeTruthy();
         console.log('exit', code);
         resolve();

@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "test": "jest --testTimeout=30000 --runInBand",
-    "cov": "jest --testTimeout=30000 --coverage --runInBand"
+    "cov": "jest --testTimeout=30000 --coverage --runInBand --forceExit"
   },
   "repository": {
     "type": "git",
