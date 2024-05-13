@@ -25,10 +25,20 @@ $ npx mwtsc --watch --project tsconfig.production.json --run ./bootstrap.js
 
 You can use `mwtsc` API in your code to extend your own logic.
 
+mwtsc API:
+
+* `run` - run tsc compile
+* `chokidar` - watch file change
+
+run API:
+* `exit` - exit process
+* `restart` - restart process
+* `onExit` - on exit event
+
 ```ts
 // custom.js
 const { run, chokidar } = require('mwtsc');
-const { restart, exit, onExit, onRestart } = run();
+const { restart, exit, onExit } = run();
 
 const watcher = chokidar.watch('node_modules/**/*.ts', {
   ignoreInitial: true,
@@ -53,7 +63,7 @@ Rewrite dev command in `package.json` .
 ```json
 {
   "scripts": {
-    "dev": "./custom.js --watch --run ./bootstrap.js"
+    "dev": "NODE_ENV=local node ./custom.js --watch --run ./bootstrap.js"
   }
 }
 ```
