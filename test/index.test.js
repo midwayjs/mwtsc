@@ -197,4 +197,48 @@ describe('/test/index.js', () => {
       });
     });
   });
+
+  it('should restart when running failed with error and file changed soon', async () => {
+    // prepare
+    const runPath = join(__dirname, 'fixtures/unreject_error');
+    const file = join(runPath, 'a.ts');
+    await removeFile([
+      file,
+      join(runPath, 'dist/a.js'),
+    ]);
+
+    const tpl = `
+(async () => {
+  throw new Error('error')
+})();
+`;
+
+    // write to a.ts
+    writeFileSync(file, tpl);
+
+    const cp = await execa('node', [mtscPath, '--watch', '--run', './run.js'], {
+      cwd: runPath,
+    });
+
+    await sleep(1000);
+
+    // change file
+    writeFileSync(file, 'console.log("b")');
+
+    await new Promise((resolve, reject) => {
+      cp.on('exit', code => {
+        try {
+          expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
+          expect(readFileSync(join(runPath, 'dist/a.js'), 'utf-8')).toMatch(/"b"/);
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+
+      setTimeout(() => {
+        cp.kill();
+      }, 3000);
+    });
+  });
 });
