@@ -1,4 +1,10 @@
 
+1.9.1 / 2024-05-15
+==================
+
+  * fix: windows process exit when throw error (#21)
+  * docs: update api
+
 1.9.0 / 2024-05-13
 ==================
 
