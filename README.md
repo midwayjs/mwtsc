@@ -13,6 +13,9 @@ $ npx mwtsc --watch --run ./bootstrap.js
 
 # run with tsc options
 $ npx mwtsc --watch --project tsconfig.production.json --run ./bootstrap.js
+
+# the child process keep avaliable during the development
+$ npx mwtsc --watch --run ./bootstrap.js --keepalive
 ```
 
 ## Different with tsc and tsc-watch
