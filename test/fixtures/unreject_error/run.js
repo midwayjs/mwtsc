@@ -1,2 +1,2 @@
 require('./dist/a.js')
-process.send({ type: 'ready' });
+process.send({ title: 'server-ready' });

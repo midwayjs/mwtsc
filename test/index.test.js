@@ -241,4 +241,32 @@ describe('/test/index.js', () => {
       }, 3000);
     });
   });
+
+  it('should not restart when bootstrap fail in keepalive mode', async () => {
+    // prepare
+    const runPath = join(__dirname, 'fixtures/init_error');
+    await removeFile([
+      join(runPath, 'dist/a.js'),
+    ]);
+
+    const cp = await execa('node', [mtscPath, '--watch', '--run', './run.js', '--keepalive'], {
+      cwd: runPath,
+    });
+
+    await new Promise((resolve, reject) => {
+      cp.on('exit', code => {
+        try {
+          expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
+          expect(readFileSync(join(runPath, 'dist/a.js'), 'utf-8')).toMatch(/"b"/);
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+
+      setTimeout(() => {
+        cp.kill();
+      }, 3000);
+    });
+  });
 });
