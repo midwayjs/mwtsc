@@ -2,17 +2,9 @@ const { join, resolve } = require('path');
 const { unlink } = require('fs/promises');
 const { existsSync, writeFileSync, readFileSync  } = require('fs');
 const { forkRun } = require('../lib/process');
-const { execa, sleep } = require('./util');
+const { execa, sleep, removeFile } = require('./util');
 
 const mtscPath = join(__dirname, '../bin/mwtsc.js');
-
-async function removeFile(fileList) {
-  for (const f of fileList) {
-    if (existsSync(f)) {
-      await unlink(f);
-    }
-  }
-}
 
 describe('/test/index.js', () => {
   it('should compile ts file completely and exit', async () => {
