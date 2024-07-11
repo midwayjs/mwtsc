@@ -1,4 +1,6 @@
 const cp = require('child_process');
+const { existsSync } = require('fs');
+const { unlink } = require('fs/promises');
 
 function execa(cmd, args, options) {
   return new Promise((resolve, reject) => {
@@ -43,5 +45,14 @@ function sleep(ms) {
   });
 }
 
+async function removeFile(fileList) {
+  for (const f of fileList) {
+    if (existsSync(f)) {
+      await unlink(f);
+    }
+  }
+}
+
 exports.execa = execa;
 exports.sleep = sleep;
+exports.removeFile = removeFile;
