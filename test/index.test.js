@@ -279,7 +279,7 @@ describe('/test/index.js', () => {
 
       cp.on('exit', code => {
         clearTimeout(h);
-        const packageJson = require(join(runPath, 'node_modules/typescript/package.json'));
+        const packageJson = require(join(process.cwd(), 'node_modules/typescript/package.json'));
         const tscVersion = cp.stdout.toString().trim();
         expect(tscVersion).toBe(packageJson.version);
         resolve();
