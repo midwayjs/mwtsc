@@ -280,8 +280,8 @@ describe('/test/index.js', () => {
       cp.on('exit', code => {
         clearTimeout(h);
         const packageJson = require(join(process.cwd(), 'node_modules/typescript/package.json'));
-        const tscVersion = cp.stdout.toString().trim();
-        if (tscVersion !== packageJson.version) {
+        const tscVersion = cp.stdout.join('');
+        if (!tscVersion.includes(packageJson.version)) {
           reject(new Error(`tsc version not match, expect ${packageJson.version}, but got ${tscVersion}`));
         }
         resolve();
