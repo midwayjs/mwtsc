@@ -261,4 +261,29 @@ describe('/test/index.js', () => {
       }, 3000);
     });
   });
+
+  it('should check tsc version and match the version in node_modules/typescript/package.json', async () => {
+    const runPath = join(__dirname, 'fixtures/test_build');
+    await removeFile([
+      join(runPath, 'a.js'),
+    ]);
+
+    const cp = await execa('node', [mtscPath, '--version'], {
+      cwd: runPath,
+    });
+
+    await new Promise(resolve => {
+      const h = setTimeout(() => {
+        throw new Error('Child process is running timeout');
+      }, 1000);
+
+      cp.on('exit', code => {
+        clearTimeout(h);
+        const packageJson = require(join(runPath, 'node_modules/typescript/package.json'));
+        const tscVersion = cp.stdout.toString().trim();
+        expect(tscVersion).toBe(packageJson.version);
+        resolve();
+      });
+    });
+  });
 });
