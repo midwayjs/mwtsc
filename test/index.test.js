@@ -272,7 +272,7 @@ describe('/test/index.js', () => {
       cwd: runPath,
     });
 
-    await new Promise(resolve => {
+    await new Promise((resolve, reject) => {
       const h = setTimeout(() => {
         throw new Error('Child process is running timeout');
       }, 1000);
@@ -281,7 +281,9 @@ describe('/test/index.js', () => {
         clearTimeout(h);
         const packageJson = require(join(process.cwd(), 'node_modules/typescript/package.json'));
         const tscVersion = cp.stdout.toString().trim();
-        expect(tscVersion).toBe(packageJson.version);
+        if (tscVersion !== packageJson.version) {
+          reject(new Error(`tsc version not match, expect ${packageJson.version}, but got ${tscVersion}`));
+        }
         resolve();
       });
     });

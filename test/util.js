@@ -33,10 +33,11 @@ function execa(cmd, args, options) {
 
     child.once('exit', (code) => {
       console.log('exit', code);
+      if (code !== 0) {
+        reject(new Error(`Child process exited with code ${code}`));
+      }
     });
   });
-
-  return child;
 }
 
 function sleep(ms) {
