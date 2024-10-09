@@ -1,3 +1,10 @@
+
+1.11.2 / 2024-10-09
+===================
+
+  * fix: using absolute paths for tsc.cmd on Windows (#30)
+  * fix: too old version check (#28)
+
 1.11.1 / 2024-07-14
 ===================
 
