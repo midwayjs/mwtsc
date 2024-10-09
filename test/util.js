@@ -7,10 +7,14 @@ function execa(cmd, args, options) {
     // mock execa
     const child = cp.spawn(cmd, args, {
       cwd: __dirname,
-      stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+      stdio: ['inherit', 'pipe', 'inherit', 'ipc'],
       ...options,
     });
 
+    child.output = [];
+    child.stdout.on('data', (data) => {
+      child.output.push(data.toString());
+    });
     child.on('message', (data) => {
       if (args.includes('--watch')) {
         if (data === 'watch-compile-success-first' || data === 'watch-compile-fail') {
@@ -33,10 +37,11 @@ function execa(cmd, args, options) {
 
     child.once('exit', (code) => {
       console.log('exit', code);
+      if (code !== 0) {
+        reject(new Error(`Child process exited with code ${code}`));
+      }
     });
   });
-
-  return child;
 }
 
 function sleep(ms) {

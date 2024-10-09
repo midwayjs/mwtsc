@@ -28,6 +28,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: npm install -g typescript@3.9.10
       - run: npm install && npm install codecov
       - run: npm run cov
       - name: Upload coverage to Codecov
