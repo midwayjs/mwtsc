@@ -3,6 +3,7 @@ const { unlink } = require('fs/promises');
 const { existsSync, writeFileSync, readFileSync  } = require('fs');
 const { forkRun } = require('../lib/process');
 const { execa, sleep, removeFile } = require('./util');
+const fetch = require('node-fetch');
 
 const mtscPath = join(__dirname, '../bin/mwtsc.js');
 
@@ -286,6 +287,42 @@ describe('/test/index.js', () => {
         }
         resolve();
       });
+    });
+  });
+
+  it.skip('should test sourcemap proxy server', async () => {
+    const runPath = join(__dirname, 'fixtures/test_proxy');
+    await removeFile([
+      join(runPath, 'dist/a.js'),
+      join(runPath, 'dist/a.js.map'),
+    ]);
+
+    const cp = await execa('node', [mtscPath, '--watch', '--inspect', '--run', './run.js'], {
+      cwd: runPath,
+    });
+
+    await sleep(1000);
+
+    const res = await fetch('http://localhost:7788/a.ts');
+    expect(res.status).toBe(200);
+
+    const res1 = await fetch('http://localhost:7788/a.js.map');
+    expect(res1.status).toBe(200);
+
+    await new Promise((resolve, reject) => {
+      cp.on('exit', code => {
+        try {
+          expect(existsSync(join(runPath, 'dist/a.js'))).toBeTruthy();
+          expect(existsSync(join(runPath, 'dist/a.js.map'))).toBeTruthy();
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+
+      setTimeout(() => {
+        cp.kill();
+      }, 3000);
     });
   });
 });
