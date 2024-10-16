@@ -16,6 +16,10 @@ $ npx mwtsc --watch --project tsconfig.production.json --run ./bootstrap.js
 
 # the child process keep avaliable during the development
 $ npx mwtsc --watch --run ./bootstrap.js --keepalive
+
+# run with inspect and debug in chrome or other supported tools
+$ npx mwtsc --watch --inspect --run ./bootstrap.js
+$ npx mwtsc --watch --inspect-brk --run ./bootstrap.js
 ```
 
 ## Different with tsc and tsc-watch
