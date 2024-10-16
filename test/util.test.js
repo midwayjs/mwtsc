@@ -1,17 +1,123 @@
-const { parseArgs, deleteFolderRecursive, copyFilesRecursive, readJSONCFile, filterFileChangedText } = require('../lib/util');
+const { parseArgs, deleteFolderRecursive, copyFilesRecursive, readJSONCFile, filterFileChangedText, convertPosixToGnu } = require('../lib/util');
 const fs = require('fs');
 const path = require('path')
 
 describe('test/util.test.js', () => {
-  it('should parse', () => {
-    expect(parseArgs(['node', 'tsc'])).toEqual([undefined, [], [], false]);
-    expect(parseArgs(['node', 'tsc', '--watch'])).toEqual([undefined, ['--watch'], [], false]);
-    expect(parseArgs(['node', 'tsc', '--watch', '--run', 'index.js'])).toEqual(['index.js', ['--watch'], [], false]);
-    expect(parseArgs(['node', 'tsc', '--watch', '--run', 'index.js', '--', '--port', '3000'])).toEqual(['index.js', ['--watch'], ['--', '--port', '3000'], false]);
-    expect(parseArgs(['node', 'tsc', '--watch', '--project', 'tsconfig.prod.json'])).toEqual([undefined, ['--watch', '--project', 'tsconfig.prod.json'], [], false]);
-    expect(parseArgs(['node', 'tsc', '--watch', '--run'])).toEqual([undefined, ['--watch'], [], false]);
-    expect(parseArgs(['node', 'tsc', '--cleanOutDir'])).toEqual([undefined, [], [], true]);
-    expect(parseArgs(['node', 'tsc', '--watch', '--cleanOutDir', '--build', '--run'])).toEqual([undefined, ['--watch', '--build'], [], true]);
+  describe('parseArgs', () => {
+    it('should correctly parse basic arguments', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--project', 'tsconfig.production.json']);
+      expect(result).toEqual({
+        cmdPath: undefined,
+        tscArgs: ['--watch', '--project', 'tsconfig.production.json'],
+        parentArgs: [],
+        childArgs: []
+      });
+    });
+
+    it('should correctly parse arguments with --run', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--project', 'tsconfig.production.json', '--run', './bootstrap.js', '--port', '3000']);
+      expect(result).toEqual({
+        cmdPath: './bootstrap.js',
+        tscArgs: ['--watch', '--project', 'tsconfig.production.json'],
+        parentArgs: [],
+        childArgs: ['--port', '3000']
+      });
+    });
+
+    it('should correctly handle notTscArgs', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--cleanOutDir', '--inspect', '9229', '--project', 'tsconfig.json', '--run', './app.js']);
+      expect(result).toEqual({
+        cmdPath: './app.js',
+        tscArgs: ['--watch', '--project', 'tsconfig.json'],
+        parentArgs: ['--cleanOutDir', '--inspect', '9229'],
+        childArgs: []
+      });
+    });
+
+    it('should correctly handle GNU-style arguments', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--port=3000', '--inspect-brk=9230', '--run', './app.js', '--env=production']);
+      expect(result).toEqual({
+        cmdPath: './app.js',
+        tscArgs: ['--watch', '--port', '3000'],
+        parentArgs: ['--inspect-brk', '9230'],
+        childArgs: ['--env', 'production']
+      });
+    });
+
+    it('should correctly handle POSIX-style arguments', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--port', '3000', '--inspect-brk', '9230', '--run', './app.js', '--env', 'production']);
+      expect(result).toEqual({
+        cmdPath: './app.js',
+        tscArgs: ['--watch', '--port', '3000'],
+        parentArgs: ['--inspect-brk', '9230'],
+        childArgs: ['--env', 'production']
+      });
+    });
+
+    it('should correctly handle mixed-style arguments', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--port', '3000', '--outDir=./dist', '--cleanOutDir', '--inspect=9229', '--run', './app.js']);
+      expect(result).toEqual({
+        cmdPath: './app.js',
+        tscArgs: ['--watch', '--port', '3000', '--outDir', './dist'],
+        parentArgs: ['--cleanOutDir', '--inspect', '9229'],
+        childArgs: []
+      });
+    });
+
+    it('should correctly handle Node.js inspect arguments without value', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--inspect', '--run', './app.js']);
+      expect(result).toEqual({
+        cmdPath: './app.js',
+        tscArgs: ['--watch'],
+        parentArgs: ['--inspect'],
+        childArgs: []
+      });
+    });
+
+    it('should correctly handle Node.js inspect arguments with port', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--inspect=9229', '--run', './app.js']);
+      expect(result).toEqual({
+        cmdPath: './app.js',
+        tscArgs: ['--watch'],
+        parentArgs: ['--inspect', '9229'],
+        childArgs: []
+      });
+    });
+
+    it('should correctly handle Node.js inspect-brk arguments', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--inspect-brk=0.0.0.0:9229', '--run', './app.js']);
+      expect(result).toEqual({
+        cmdPath: './app.js',
+        tscArgs: ['--watch'],
+        parentArgs: ['--inspect-brk', '0.0.0.0:9229'],
+        childArgs: []
+      });
+    });
+  });
+
+  describe('convertPosixToGnu', () => {
+    it('should convert POSIX-style arguments to GNU-style', () => {
+      const posixArgs = ['--watch', '--port', '3000', '--inspect', '9229', '--outDir', './dist'];
+      const expectedGnuArgs = ['--watch', '--port=3000', '--inspect=9229', '--outDir=./dist'];
+      expect(convertPosixToGnu(posixArgs)).toEqual(expectedGnuArgs);
+    });
+
+    it('should handle arguments without values correctly', () => {
+      const posixArgs = ['--watch', '--cleanOutDir', '--port', '3000'];
+      const expectedGnuArgs = ['--watch', '--cleanOutDir', '--port=3000'];
+      expect(convertPosixToGnu(posixArgs)).toEqual(expectedGnuArgs);
+    });
+
+    it('should not change already GNU-style arguments', () => {
+      const gnuArgs = ['--watch', '--port=3000', '--inspect=9229'];
+      expect(convertPosixToGnu(gnuArgs)).toEqual(gnuArgs);
+    });
+
+    it('should handle mixed POSIX and GNU-style arguments', () => {
+      const mixedArgs = ['--watch', '--port', '3000', '--inspect=9229', '--outDir', './dist'];
+      const expectedGnuArgs = ['--watch', '--port=3000', '--inspect=9229', '--outDir=./dist'];
+      expect(convertPosixToGnu(mixedArgs)).toEqual(expectedGnuArgs);
+    });
   });
 
   describe('deleteFolderRecursive', () => {
