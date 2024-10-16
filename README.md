@@ -28,6 +28,27 @@ $ npx mwtsc --watch --inspect-brk --run ./bootstrap.js
 * 2、support copy non-ts file to dist directory when build source code
 * 3、support ts alias path by tsc-alias
 
+## About `--inspect` and `--inspect-brk`
+
+If you're using VSCode or JetBrains IntelliJ IDEA (or other IDEs), you won't need to manually start the child process with debugging flags like --inspect or --inspect-brk. The IDE will automatically attach the debugger to the child process. 
+
+However, if you wish to debug the child process within Chrome, you can utilize --inspect or --inspect-brk to initiate the child process with the debugger enabled.
+
+```bash
+$ npx mwtsc --watch --inspect --run ./bootstrap.js
+$ npx mwtsc --watch --inspect-brk --run ./bootstrap.js
+```
+
+Unfortunately, Chrome DevTools cannot directly access local files with certain special protocols due to security policies. To overcome this, we set up a proxy server to serve the source files. You will need to configure the proxy server's location in your tsconfig.json to properly handle source maps.
+
+```json
+{
+  "compilerOptions": {
+    "sourceRoot": "http://localhost:7788/"
+  }
+}
+```
+
 ## API
 
 You can use `mwtsc` API in your code to extend your own logic.
