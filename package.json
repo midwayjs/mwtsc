@@ -9,6 +9,7 @@
   "dependencies": {
     "@midwayjs/glob": "^1.1.1",
     "chokidar": "^3.6.0",
+    "cli-table3": "^0.6.5",
     "compare-versions": "^6.1.0",
     "source-map-support": "^0.5.21",
     "tar": "^7.4.0",
