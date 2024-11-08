@@ -1,6 +1,6 @@
 {
   "name": "mwtsc",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "description": "tsc wrapper for midway development",
   "main": "lib/index.js",
   "bin": {

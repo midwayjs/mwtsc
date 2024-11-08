@@ -1,4 +1,10 @@
 
+1.13.0 / 2024-11-09
+===================
+
+  * feat: add perf init output (#33)
+  * fix: run build throw error will not exit (#32)
+
 1.12.0 / 2024-10-16
 ===================
 
