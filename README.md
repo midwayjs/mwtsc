@@ -14,6 +14,9 @@ $ npx mwtsc --watch --run ./bootstrap.js
 # run with tsc options
 $ npx mwtsc --watch --project tsconfig.production.json --run ./bootstrap.js
 
+# run with kill timeout
+$ npx mwtsc --watch --run ./bootstrap.js --kill-timeout 5000
+
 # the child process keep avaliable during the development
 $ npx mwtsc --watch --run ./bootstrap.js --keepalive
 
@@ -27,6 +30,15 @@ $ npx mwtsc --watch --inspect-brk --run ./bootstrap.js
 * 1、support `--run` option, run file after compile success
 * 2、support copy non-ts file to dist directory when build source code
 * 3、support ts alias path by tsc-alias
+
+
+## About `--kill-timeout`
+
+Process kill timeout in milliseconds. When restarting the application, if the process doesn't exit within this time, it will be forcefully killed.
+
+Default: `2000`
+
+When using `Ctrl+C` to stop the process, it will follow the `kill-timeout` to kill the process.
 
 ## About `--inspect` and `--inspect-brk`
 

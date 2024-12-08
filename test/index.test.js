@@ -1,6 +1,6 @@
 const { join, resolve } = require('path');
 const { unlink } = require('fs/promises');
-const { existsSync, writeFileSync, readFileSync  } = require('fs');
+const { existsSync, writeFileSync, readFileSync } = require('fs');
 const { forkRun } = require('../lib/process');
 const { execa, sleep, removeFile } = require('./util');
 const fetch = require('node-fetch');
