@@ -93,6 +93,26 @@ describe('test/util.test.js', () => {
         childArgs: []
       });
     });
+
+    it('should correctly handle --tsgo flag', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--tsgo', '--run', './app.js']);
+      expect(result).toEqual({
+        cmdPath: './app.js',
+        tscArgs: ['--watch'],
+        parentArgs: ['--tsgo'],
+        childArgs: []
+      });
+    });
+
+    it('should correctly handle --tsgo with other parent args', () => {
+      const result = parseArgs(['node', 'mwtsc', '--watch', '--tsgo', '--cleanOutDir', '--inspect', '9229', '--run', './app.js']);
+      expect(result).toEqual({
+        cmdPath: './app.js',
+        tscArgs: ['--watch'],
+        parentArgs: ['--tsgo', '--cleanOutDir', '--inspect', '9229'],
+        childArgs: []
+      });
+    });
   });
 
   describe('convertPosixToGnu', () => {
@@ -199,6 +219,11 @@ describe('test/util.test.js', () => {
   it('should parse output TSFILE', () => {
     expect(filterFileChangedText('TSFILE: /Users/harry/project/application/open-koa-v3/dist/task/hello.d.ts')).toEqual(['', []]);
     expect(filterFileChangedText('TSFILE: /Users/harry/project/application/open-koa-v3/dist/task/hello.js')).toEqual(['', ['/Users/harry/project/application/open-koa-v3/dist/task/hello.js']]);
+  });
+
+  it('should parse tsgo output TSFILE (extra space after colon)', () => {
+    expect(filterFileChangedText('TSFILE:  /path/to/dist/hello.js')).toEqual(['', ['/path/to/dist/hello.js']]);
+    expect(filterFileChangedText('TSFILE:  /path/to/dist/hello.d.ts')).toEqual(['', []]);
   });
 
 });
