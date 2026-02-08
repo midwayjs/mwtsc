@@ -1,4 +1,9 @@
 
+1.16.0 / 2026-02-09
+===================
+
+  * feat: Added --tsgo parameter to support @ typescript/native-preview compiler (#40)
+
 1.15.2 / 2025-07-17
 ===================
 
